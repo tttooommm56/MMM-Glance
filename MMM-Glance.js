@@ -102,11 +102,11 @@ Module.register("MMM-Glance", {
   initialize: function() {
     var self = this
     MM.getModules().enumerate(function(m) {
-      if(m.data.position) {
-        self.alias[m.name] = m.name
+      if (self.config.alias["default"].indexOf(m.name) == -1) {
+        m.hide();
       }
-      })
-    this.alias = Object.assign({}, this.alias, this.defaultAlias, this.config.alias)
+    })
+    this.alias = this.config.alias;
   },
 
   glanceOn : function (call, time) {
@@ -130,11 +130,13 @@ Module.register("MMM-Glance", {
     if (!this.glancing) {
       MM.getModules().enumerate(function(m) {
         if (m.data.position) {
+          Log.info("Glance init : ", m);
           self.status[m.name] = m.hidden
         }
       })
     }
     MM.getModules().enumerate(function(m) {
+		console.log(filter);
       if(Object.values(filter).indexOf(m.name) >= 0) {
         matched = 1
       }
@@ -148,8 +150,10 @@ Module.register("MMM-Glance", {
       this.timer = null
       MM.getModules().enumerate(function(m) {
         if (Object.values(filter).indexOf(m.name) >= 0) {
+          Log.info("glanceOn : " + m.name + " hide");
           m.show(0)
         } else {
+          Log.info("glanceOn : " + m.name + " hide");
           m.hide(0)
         }
       })
@@ -171,8 +175,10 @@ Module.register("MMM-Glance", {
       MM.getModules().enumerate(function(m) {
         if (typeof self.status[m.name] !== 'undefined') {
           if (self.status[m.name]) {
+            Log.info("glanceOff : " + m.name + " hide");
             m.hide(0)
           } else {
+            Log.info("glanceOff : " + m.name + " show");
             m.show(0)
           }
         }
@@ -196,6 +202,15 @@ Module.register("MMM-Glance", {
         break
       case 'GLANCE_OFF':
         this.glanceOff()
+        break   
+      case 'VOICE_COMMAND':
+        // Ajout commande vocale (Module MMM-Jarvis-Voice-Control)
+        if (payload.indexOf("trafic") != -1) {
+          this.glanceOn("trafic", 20000);
+        }
+        if (payload.indexOf("radar pluie") != -1) {
+          this.glanceOn("radar_pluie", 30000);
+        }
         break
     }
   },
