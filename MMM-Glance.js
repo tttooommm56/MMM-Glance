@@ -28,10 +28,6 @@ Module.register("MMM-Glance", {
       "test" : ["clock", "newsfeed"]
     }
     this.currentAliasIndex = 0;
-    var self = this
-    setInterval(function(){
-      self.notificationReceived('BUTTON_PRESSED')
-    }, 5000)
   },
 
   getTranslations: function() {
