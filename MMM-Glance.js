@@ -27,6 +27,11 @@ Module.register("MMM-Glance", {
       "hello" : "helloworld",
       "test" : ["clock", "newsfeed"]
     }
+    this.currentAliasIndex = 0;
+    var self = this
+    setInterval(function(){
+      self.notificationReceived('BUTTON_PRESSED')
+    }, 5000)
   },
 
   getTranslations: function() {
@@ -211,6 +216,14 @@ Module.register("MMM-Glance", {
         if (payload.indexOf("radar pluie") != -1) {
           this.glanceOn("radar_pluie", 30000);
         }
+        break
+      case 'BUTTON_PRESSED':   
+        // Fais défiler les vues à chaque pression du bouton
+        this.currentAliasIndex++;
+        if (this.currentAliasIndex > Object.keys(this.alias).length - 1) {
+          this.currentAliasIndex = 0;
+        }
+        this.glanceOn(Object.keys(this.alias)[this.currentAliasIndex], 60000);
         break
     }
   },
