@@ -187,6 +187,7 @@ Module.register("MMM-Glance", {
       this.status = {}
 
       this.sendNotification('GLANCE_ENDED')
+      this.currentAliasIndex = 0;
       return true
     }
     return false
